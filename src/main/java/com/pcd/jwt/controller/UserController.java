@@ -72,6 +72,11 @@ public class UserController {
         return userRepository.CountUser(roleName);
     }
 
+    @PutMapping("/users/update/{userName}")
+    public int getUserFullName(@PathVariable String userName) {
+        return userRepository.UpdateFullName(userName);
+    }
+
 
 
     @GetMapping("/user/{Id}")

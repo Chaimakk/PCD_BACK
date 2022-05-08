@@ -42,5 +42,8 @@ public class CourseService {
     public List<Courses> findAllCourses(){
         return (List<Courses>) courseRepository.findAll();
     }
+    public Courses update(Courses courses) {
+        return courseRepository.save(courses);
+    }
 
 }

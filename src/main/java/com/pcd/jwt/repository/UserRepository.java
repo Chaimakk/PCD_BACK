@@ -3,6 +3,7 @@ package com.pcd.jwt.repository;
 import com.pcd.jwt.entity.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     public List<User> findAll(String roleName);
     @Query("SELECT count(u) FROM User u JOIN u.role r WHERE r.roleName LIKE %?1%")
     public Long CountUser(String roleName);
+    @Modifying
+    @Query("update User u set u.userPostalCode=?1 where u.userName LIKE %?1%")
+    int UpdateFullName(String userName);
 }

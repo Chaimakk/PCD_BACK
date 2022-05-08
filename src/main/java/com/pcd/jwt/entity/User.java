@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.List;
 
 @Entity
 public class User {
@@ -27,6 +28,8 @@ public class User {
     private  int userPostalCode;
     private String userCity;
     private String userCountry;
+    @ElementCollection
+   private  List<String> userCategory;
     private String userLevel;
     private String userDomain;
 
@@ -196,5 +199,11 @@ public class User {
         this.centerDirectorName = centerDirectorName;
     }
 
+    public List<String> getUserCategory() {
+        return userCategory;
+    }
 
+    public void setUserCategory(List<String> userCategory) {
+        this.userCategory = userCategory;
+    }
 }

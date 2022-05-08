@@ -6,6 +6,7 @@ import com.pcd.jwt.service.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletContext;
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
@@ -38,21 +40,30 @@ public class CourseController {
 
 
     @PostMapping("/addCourses")
-    public Courses addC(@RequestParam("price")Long price,@RequestParam("city")String city,@RequestParam("phoneNumber")int phoneNumber, @RequestParam("courseName") String courseName, @RequestParam("category") String category, @RequestParam("description") String description, @RequestParam("formerName") String formerName, @RequestParam("formerEmail") String formerEmail, @RequestParam("picture") MultipartFile file, MultipartHttpServletRequest request) throws IOException, ParseException {
-        Courses food = new Courses();
-        food.setPrice(price);
-        food.setCourseName(courseName);
-        food.setCategory(category);
-        food.setDescription(description);
-        food.setFormerEmail(formerEmail);
-        food.setFormerName(formerName);
-        food.setCity(city);
-        food.setPhoneNumber(phoneNumber);
+    public Courses addC(@RequestParam("price")Long price,@RequestParam("city")String city,
+                        @RequestParam("phoneNumber")int phoneNumber, @RequestParam("courseName") String courseName,
+                        @RequestParam("category") String category, @RequestParam("description") String description,
+                        @RequestParam("formerName") String formerName, @RequestParam("formerEmail") String formerEmail,
+                        @RequestParam("picture") MultipartFile file, MultipartHttpServletRequest request) throws IOException, ParseException {
+        Courses courses = new Courses();
+        courses.setPrice(price);
+        courses.setCourseName(courseName);
+        courses.setCategory(category);
+        courses.setDescription(description);
+        courses.setFormerEmail(formerEmail);
+        courses.setFormerName(formerName);
+        courses.setCity(city);
+        courses.setPhoneNumber(phoneNumber);
         byte[] picture = file.getBytes();
-        food.setPicture(picture);
+        courses.setPicture(picture);
         log.info("The picture file has " + picture.length + " bytes");
-        return courseService.create(food);
+        return courseService.create(courses);
     }
+   /* @PostMapping("/addisFavorite/{Id}")
+    public Courses addF(@RequestParam("isFavorite") Boolean isFavorite,@PathVariable Long Id)throws IOException, ParseException {
+
+    }*/
+
     @GetMapping("/courses")
     public List<Courses> getAllC() {
         return courseService.read();
@@ -76,6 +87,11 @@ public class CourseController {
 
         return courseRepository.findCoursesByEmail(formerEmail) ;
     }
+    @GetMapping("/favoriteCourses/{isFavorite}")
+    public List<Courses> getCourseByEmail(@PathVariable Boolean isFavorite) {
+
+        return courseRepository.findByFavorite(isFavorite) ;
+    }
     @RequestMapping(value = "/delete-course/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) throws Exception {
         try {
@@ -90,11 +106,61 @@ public class CourseController {
         Courses updateCourses = courseService.updateCourses(course);
         return new ResponseEntity<>(updateCourses, HttpStatus.OK);
     }
+    @PutMapping("/Favorite/{id}")
+    public  void updateF(@PathVariable Long id) {
+
+
+       courseRepository.setIsFavoriteById(id);
+    }
     @GetMapping("/courses/count")
     public Long getCourseCount() {
         return courseRepository.count();
     }
 
+    @PutMapping("/updateCourses")
+    public Courses modifyCourse(@RequestParam("price")Long price,@RequestParam("city")String city,
+                              @RequestParam("phoneNumber")int phoneNumber, @RequestParam("courseName") String courseName,
+                              @RequestParam("category") String category, @RequestParam("description") String description,
+                              @RequestParam("formerName") String formerName, @RequestParam("formerEmail") String formerEmail,
+                              @RequestParam("picture") MultipartFile file, MultipartHttpServletRequest request) throws IOException, ParseException {
+        Courses courses=new Courses();
+        courses.setPrice(price);
+        courses.setCourseName(courseName);
+        courses.setCategory(category);
+        courses.setDescription(description);
+        courses.setFormerEmail(formerEmail);
+        courses.setFormerName(formerName);
+        courses.setCity(city);
+        courses.setPhoneNumber(phoneNumber);
+        byte[] picture = file.getBytes();
+        courses.setPicture(picture);
+        return courseService.update(courses);
+    }
+    @GetMapping("/distinct-former")
+    public List getDistinctCoursesByEmail( ) {
+
+        return courseRepository.findDistinctCoursesByEmail() ;
+    }
+    @GetMapping("/picture/{formerEmail}")
+    public List getPictureByEmail(@PathVariable String formerEmail ) {
+
+        return courseRepository.findPictureByEmail(formerEmail) ;
+    }
+    @GetMapping("/allFavorite")
+    public List getAllFavorite( ) {
+
+        return courseRepository.findAllFavorite() ;
+    }
+    @GetMapping("/first5Favorite/{first5Favorite}")
+
+        public List<Courses> getFirst5ByIsFavorite(@PathVariable boolean first5Favorite ){
+        return courseRepository.findFirst5ByIsFavorite(first5Favorite) ;
+    }
+    @GetMapping("/CourseName/{CourseName}/{formerEmail}")
+    public List<Courses> getFormerCourseName(@PathVariable String CourseName ,@PathVariable String formerEmail ) {
+
+        return courseRepository.findByCourseAndFormer(CourseName,formerEmail) ;
+    }
 
 
 }

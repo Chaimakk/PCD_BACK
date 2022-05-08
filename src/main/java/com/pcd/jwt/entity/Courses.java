@@ -2,6 +2,7 @@ package com.pcd.jwt.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.List;
 
 @Entity
 @Table(schema = "Courses")
@@ -11,6 +12,7 @@ public class Courses {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String CourseName;
     private String description;
     private double price;
@@ -18,6 +20,9 @@ public class Courses {
     private String formerName;
     private String city;
     private  int phoneNumber;
+    private boolean isFavorite;
+    //@ElementCollection
+    //private List<String> persons;
     @Email
 
     private  String formerEmail;
@@ -118,4 +123,14 @@ public class Courses {
     public void setPhoneNumber(int phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+
 }

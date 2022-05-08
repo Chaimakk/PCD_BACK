@@ -44,7 +44,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/authenticate", "/registerNewStudent","/registerNewFormer","/registerNewCenter",
                         "/list","/user/{Id}","/userEmail/{userEmail}","/delete-user/{id}","/roles/{roleName}",
                         "/update/{UserId}","/addCourses","/courses","/course/{id}","/category/{category}","/email/{formerEmail}","/delete-course/{id}",
-                        "/update-course/{id}","/city/{city}","/courses/count","/users/count/{roleName}","/profile/{userEmail}"
+                        "/update-course/{id}","/city/{city}","/courses/count","/users/count/{roleName}","/profile/{userEmail}","/users/update/{userName}",
+                        "/updateCourses","/distinct-former","/picture/{formerEmail}","/favoriteCourses/{isFavorite}","/Favorite/{id}",
+                        "/allFavorite","/first5Favorite/{first5Favorite}","/CourseName/{CourseName}/{FormerEmail}","/addCenterCourses"
 
                 ).permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
