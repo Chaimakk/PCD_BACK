@@ -4,18 +4,23 @@ import com.pcd.jwt.entity.Role;
 import com.pcd.jwt.repository.RoleRepository;
 import com.pcd.jwt.repository.UserRepository;
 import com.pcd.jwt.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class UserService {
-
+    MultipartFile file;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UserRepository userRepository;
 
@@ -97,7 +102,7 @@ public class UserService {
 //        userDao.save(user);
     }
 
-    public User registerNewStudent(User user) {
+    public User registerNewStudent(User user)   {
         Role role = roleRepository.findById("Student").get();
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(role);
@@ -113,6 +118,7 @@ public class UserService {
         user.setUserPostalCode(user.getUserPostalCode());
         user.setUserFullName(user.getUserFullName());
         user.setUserBirthday(user.getUserBirthday());
+
 
         return userRepository.save(user);
     }

@@ -46,7 +46,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/update/{UserId}","/addCourses","/courses","/course/{id}","/category/{category}","/email/{formerEmail}","/delete-course/{id}",
                         "/update-course/{id}","/city/{city}","/courses/count","/users/count/{roleName}","/profile/{userEmail}","/users/update/{userName}",
                         "/updateCourses","/distinct-former","/picture/{formerEmail}","/favoriteCourses/{isFavorite}","/Favorite/{id}",
-                        "/allFavorite","/first5Favorite/{first5Favorite}","/CourseName/{CourseName}/{FormerEmail}","/addCenterCourses"
+                        "/allFavorite","/first5Favorite/{first5Favorite}","/CourseName/{CourseName}/{FormerEmail}","/addCenterCourses",
+                        "/addAnnouncement","/announcements","/centerCategory/{category}","/saveImage/{userEmail}","/getImageByEmail/{userEmail}",
+                        "/Favorite/{id}/{user}","/Favorite/{id}/{user}/{isFavorite}", "/courseUser/{course_id}/{user_id}","/courseByUser/{user_id}",
+                        "/centerCourseByUser/{user_id}","/centerCourseUser/{centerCourse_id}/{user_id}","/centerCity/{city}",
+                        "/centerFormerEmail/{formerEmail}","/delete-centerCourse/{id}","/delete-announcement/{id}","/isConfirmed/{id}","/centerCourses","/UserByCourses/{id}"
+
 
                 ).permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()

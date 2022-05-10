@@ -1,5 +1,6 @@
 package com.pcd.jwt.controller;
 
+import com.pcd.jwt.entity.Courses;
 import com.pcd.jwt.entity.User;
 import com.pcd.jwt.exception.ResourceNotFoundException;
 import com.pcd.jwt.repository.UserRepository;
@@ -8,10 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 @CrossOrigin
 @RestController
@@ -139,6 +147,84 @@ public class UserController {
             return userRepository.save(user);
         }).orElseThrow(() -> new ResourceNotFoundException("ClientId " + userEmail + " not found"));
     }
+    @RequestMapping(value = "/saveImage/{userEmail}", method = RequestMethod.POST)
+
+    public User uploadImage(@RequestParam("image") MultipartFile file, @PathVariable String userEmail) throws IOException, SQLException {
+        /*String extension = FilenameUtils.getExtension(file.getOriginalFilename());*/
+        System.out.println("Original Image Byte Size - " + file.getBytes().length + " name : "+ file.getOriginalFilename() +
+                " type : "+ file.getContentType());
+        User user = userRepository.findByEmail(userEmail).get();
+        if(file!=null) {
+            user.setImage(compressBytes(file.getBytes()));
+        }
 
 
+        return userRepository.save(user);
+    }
+    @GetMapping(path = { "/getImageByEmail/{userEmail}" })
+
+    public User getImage(@PathVariable String userEmail) throws IOException {
+
+
+        User user = userRepository.findByEmail(userEmail).get();
+
+        if(user.getImage()!=null){
+            user.setImage(decompressBytes(user.getImage()));
+        }
+
+
+
+
+
+
+
+        return user;
+
+    }
+
+    // compress the image bytes before storing it in the database
+
+    public static byte[] compressBytes(byte[] data) {
+        Deflater deflater = new Deflater();
+
+        deflater.setInput(data);
+        deflater.finish();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+        }
+        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+        return outputStream.toByteArray();
+    }
+    // uncompress the image bytes before returning it to the angular application
+    public static byte[] decompressBytes(byte[] data) {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        try {
+            while (!inflater.finished()) {
+                int count = inflater.inflate(buffer);
+                outputStream.write(buffer, 0, count);
+            }
+            outputStream.close();
+        } catch (IOException ioe) {
+        } catch (DataFormatException e) {
+        }
+
+        return outputStream.toByteArray();
+    }
+    @GetMapping("/UserByCourses/{id}")
+    public  List<User> getUserByCourses(@PathVariable Long id){
+        return  userRepository.findUserByCourses(id);
+    }
 }
+

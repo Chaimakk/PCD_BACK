@@ -1,8 +1,11 @@
 package com.pcd.jwt.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(schema = "Courses")
@@ -23,13 +26,33 @@ public class Courses {
     private boolean isFavorite;
     //@ElementCollection
     //private List<String> persons;
+    private String user;
     @Email
 
     private  String formerEmail;
     @Lob
     private byte[] picture;
+    private boolean isPresent;
+    private boolean isConfirmed;
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "COURSE_USER",
+            joinColumns = {
+                    @JoinColumn(name = "COURSES_ID")
 
-    public Courses(String courseName, String description, double price, String category, byte[] picture,String formerName,String formerEmail) {
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "USER_ID"),
+
+            }
+
+    )
+    private Set<User> users =new HashSet<>();
+
+
+    @OneToMany(mappedBy = "courses")
+    Set<CourseConfirmation> confirmations;
+    public Courses(String courseName, String description,String user, double price, String category, byte[] picture,String formerName,String formerEmail) {
         CourseName = courseName;
         this.description = description;
         this.price = price;
@@ -132,5 +155,43 @@ public class Courses {
         isFavorite = favorite;
     }
 
+    public String getUser() {
+        return user;
+    }
 
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public boolean isPresent() {
+        return isPresent;
+    }
+
+    public void setPresent(boolean present) {
+        isPresent = present;
+    }
+
+    public boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        isConfirmed = confirmed;
+    }
+
+    public Set<CourseConfirmation> getConfirmations() {
+        return confirmations;
+    }
+
+    public void setConfirmations(Set<CourseConfirmation> confirmations) {
+        this.confirmations = confirmations;
+    }
 }

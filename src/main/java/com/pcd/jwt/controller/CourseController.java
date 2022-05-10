@@ -106,12 +106,34 @@ public class CourseController {
         Courses updateCourses = courseService.updateCourses(course);
         return new ResponseEntity<>(updateCourses, HttpStatus.OK);
     }
-    @PutMapping("/Favorite/{id}")
-    public  void updateF(@PathVariable Long id) {
+    @PutMapping("/Favorite/{id}/{user}")
+    public  void updateF(@PathVariable Long id,@PathVariable String user) {
 
 
-       courseRepository.setIsFavoriteById(id);
+
+       courseRepository.setIsFavoriteById(id,user);
     }
+    @PostMapping("/Favorite/{id}/{user}/{isFavorite}")
+    public  void updateF(@PathVariable Long id,@PathVariable String user,@PathVariable boolean isFavorite) {
+
+
+
+        courseRepository.post(id,user,isFavorite);
+    }
+    @PutMapping("/isConfirmed/{id}")
+    public  void updateF(@PathVariable String userName) {
+
+
+
+        courseRepository.setIsConfirmed(userName);
+    }
+   /* @PostMapping("/insert/{id}/{user}/{isFavorite}")
+    public  void insert(@PathVariable boolean isFavorite,@PathVariable String user,@PathVariable Long id) {
+
+
+
+        courseRepository.insert(isFavorite,user,id);
+    }*/
     @GetMapping("/courses/count")
     public Long getCourseCount() {
         return courseRepository.count();
@@ -160,6 +182,15 @@ public class CourseController {
     public List<Courses> getFormerCourseName(@PathVariable String CourseName ,@PathVariable String formerEmail ) {
 
         return courseRepository.findByCourseAndFormer(CourseName,formerEmail) ;
+    }
+
+    @PostMapping("/courseUser/{course_id}/{user_id}")
+    public void cu(@PathVariable Long course_id,@PathVariable String user_id){
+        courseService.CourseUser(course_id,user_id);
+    }
+    @GetMapping("/courseByUser/{user_id}")
+    public  List<Courses> getCoursesByUser(@PathVariable String user_id ){
+        return  courseRepository.findCoursesByUser(user_id);
     }
 
 

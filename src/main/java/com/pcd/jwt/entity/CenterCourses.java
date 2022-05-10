@@ -1,7 +1,12 @@
 package com.pcd.jwt.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class CenterCourses {
@@ -15,14 +20,34 @@ public class CenterCourses {
     private String centerName;
     @Email
     private String centerEmail;
+    @Email
+    private  String formerEmail;
+    private int formerPhoneNumber;
     private String description;
     private double price;
     private String category;
     private String formerName;
     private String city;
     private  int phoneNumber;
+    private  String address;
+    private String date;
 
-    public CenterCourses(Long id, String courseName, String centerName, String centerEmail, String description, double price, String category, String formerName, String city, int phoneNumber) {
+    @Lob
+    private byte[] picture;
+
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "CENTERCOURSE_USER",
+            joinColumns = {
+                    @JoinColumn(name = "CENTERCOURSE_ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "USER_ID")
+            }
+    )
+    private Set<User> usersC =new HashSet<>();
+
+       public CenterCourses(Long id,String formerEmail,String address,int formerPhoneNumber, String courseName, String centerName,String date, String centerEmail, String description, double price, String category, String formerName, String city, int phoneNumber, byte[] picture) {
         this.id = id;
         this.courseName = courseName;
         this.centerName = centerName;
@@ -33,7 +58,13 @@ public class CenterCourses {
         this.formerName = formerName;
         this.city = city;
         this.phoneNumber = phoneNumber;
+        this.picture = picture;
+        this.formerEmail=formerEmail;
+        this.formerPhoneNumber=formerPhoneNumber;
+        this.address=address;
+        this.date=date;
     }
+
     public CenterCourses(){};
     public Long getId() {
         return id;
@@ -113,5 +144,53 @@ public class CenterCourses {
 
     public void setPhoneNumber(int phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
+    }
+
+    public Set<User> getUsersC() {
+        return usersC;
+    }
+
+    public void setUsersC(Set<User> usersC) {
+        this.usersC = usersC;
+    }
+
+    public String getFormerEmail() {
+        return formerEmail;
+    }
+
+    public void setFormerEmail(String formerEmail) {
+        this.formerEmail = formerEmail;
+    }
+
+    public int getFormerPhoneNumber() {
+        return formerPhoneNumber;
+    }
+
+    public void setFormerPhoneNumber(int formerPhoneNumber) {
+        this.formerPhoneNumber = formerPhoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
